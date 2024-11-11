@@ -1,0 +1,42 @@
+restart;           #20.12.2020 by gyroxon
+with(plots):
+with(plottools):
+
+A := 5;
+B := 3;
+r := t -> [t, t^2]; #enter your curve by parametric equations
+
+t1 := evalf(-(2*Pi)/3):
+t2 := evalf( (2*Pi)/3):
+rt := unapply(map2(diff, r(t), t), t);
+
+                    #tangent line at a point t
+Tp := unapply(zip(`+`, apply(r, t), [s*op(1, apply(rt, t)), s*op(2, apply(rt, t))]), t, s);
+                    #normal vector at a point t
+Np := unapply(zip(`+`, apply(r, t), [-s*op(2, apply(rt, t)), s*op(1, apply(rt, t))]), t, s);
+x := unapply(op(1, apply(r, t)), t);
+y := unapply(op(2, apply(r, t)), t);
+xNp := unapply(op(1, apply(Np, t, s)), t, s);
+yNp := unapply(op(2, apply(Np, t, s)), t, s);
+
+                    #envelope of normals
+x_env := t -> -4*t^3;
+y_env := t -> (1 + 6*t^2)/2;
+
+V := [seq(t1 .. t2, (t2 - t1)/50)]:
+
+caust:=proc(a)
+    local p1, p2, p3;
+    p1 := plot([x(t), y(t), t = t1 .. t2], color = navy, legend = "парабола"):
+    p2 := plot([xNp(a, s), yNp(a, s), s = 0 .. 2]):
+    p3 := plot([x_env(t), y_env(t), t = t1 .. t2], color = coral, legend = "огибающая нормалей к параболе"):
+    display(p1, p2, p3);
+end proc;
+
+animate(caust, [t], t = V, view = [-3 .. 3, 0 .. 4], trace = 49, scaling = constrained, tickmarks = [0, 0], title = "Эволюта параболы");
+
+
+
+
+
+
